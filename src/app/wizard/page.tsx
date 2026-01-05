@@ -1,11 +1,24 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
+import { CodeBlock } from '@/shared/components'
+import { generateMarkdownPreview } from '@/features/wizard/utils'
+import type { DevelopmentPhase } from '@/features/wizard/types'
 
 export default function WizardPage() {
   const [projectName, setProjectName] = useState('')
   const [projectPurpose, setProjectPurpose] = useState('')
-  const [developmentPhase, setDevelopmentPhase] = useState<string>('')
+  const [developmentPhase, setDevelopmentPhase] = useState<DevelopmentPhase | null>(null)
+
+  const previewMarkdown = useMemo(
+    () =>
+      generateMarkdownPreview({
+        projectName,
+        projectPurpose,
+        developmentPhase,
+      }),
+    [projectName, projectPurpose, developmentPhase]
+  )
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-black">
@@ -33,7 +46,7 @@ export default function WizardPage() {
 
       {/* Main Content */}
       <main className="flex flex-1 overflow-hidden">
-        <div className="mx-auto flex w-full max-w-7xl">
+        <div className="mx-auto flex w-full max-w-7xl gap-6">
           {/* Input Area */}
           <div className="flex-1 overflow-y-auto px-6 py-8">
             <div className="mx-auto max-w-2xl">
@@ -96,7 +109,7 @@ export default function WizardPage() {
                         name="developmentPhase"
                         value="new"
                         checked={developmentPhase === 'new'}
-                        onChange={(e) => setDevelopmentPhase(e.target.value)}
+                        onChange={(e) => setDevelopmentPhase(e.target.value as DevelopmentPhase)}
                         className="mt-1"
                       />
                       <div>
@@ -115,7 +128,7 @@ export default function WizardPage() {
                         name="developmentPhase"
                         value="feature-add"
                         checked={developmentPhase === 'feature-add'}
-                        onChange={(e) => setDevelopmentPhase(e.target.value)}
+                        onChange={(e) => setDevelopmentPhase(e.target.value as DevelopmentPhase)}
                         className="mt-1"
                       />
                       <div>
@@ -134,7 +147,7 @@ export default function WizardPage() {
                         name="developmentPhase"
                         value="refactoring"
                         checked={developmentPhase === 'refactoring'}
-                        onChange={(e) => setDevelopmentPhase(e.target.value)}
+                        onChange={(e) => setDevelopmentPhase(e.target.value as DevelopmentPhase)}
                         className="mt-1"
                       />
                       <div>
@@ -153,7 +166,7 @@ export default function WizardPage() {
                         name="developmentPhase"
                         value="maintenance"
                         checked={developmentPhase === 'maintenance'}
-                        onChange={(e) => setDevelopmentPhase(e.target.value)}
+                        onChange={(e) => setDevelopmentPhase(e.target.value as DevelopmentPhase)}
                         className="mt-1"
                       />
                       <div>
@@ -169,6 +182,14 @@ export default function WizardPage() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Preview Area */}
+          <div className="hidden w-full max-w-2xl overflow-y-auto border-l border-zinc-200 bg-white px-6 py-8 dark:border-zinc-800 dark:bg-zinc-900 lg:block">
+            <h3 className="mb-4 text-lg font-semibold text-black dark:text-zinc-50">
+              プレビュー
+            </h3>
+            <CodeBlock code={previewMarkdown} language="agents.md" />
           </div>
         </div>
       </main>
