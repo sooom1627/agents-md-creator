@@ -27,8 +27,8 @@ export const TemplateCard = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={`
-        relative flex w-full flex-col gap-4 rounded-lg border-2 p-6 text-left
-        transition-all duration-200 hover:shadow-lg
+        group relative flex min-h-[280px] w-full flex-col gap-4 rounded-lg border-2 p-6 text-left
+        transition-all duration-300 ease-out hover:shadow-lg hover:-translate-y-1
         ${
           isSelected
             ? 'border-black ring-2 ring-black ring-offset-2 dark:border-white dark:ring-white'
@@ -53,18 +53,21 @@ export const TemplateCard = ({
         </p>
       </div>
 
-      {isHovered && (
-        <div className="flex flex-wrap gap-2">
-          {template.techStack.map((tech) => (
-            <span
-              key={tech}
-              className="rounded-md bg-zinc-100 px-2 py-1 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
-            >
-              {tech}
-            </span>
-          ))}
-        </div>
-      )}
+      <div
+        className={`
+          flex flex-wrap gap-2 transition-opacity duration-300 ease-out
+          ${isHovered ? 'opacity-100' : 'opacity-0'}
+        `}
+      >
+        {template.techStack.map((tech) => (
+          <span
+            key={tech}
+            className="rounded-md bg-zinc-100 px-2 py-1 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+          >
+            {tech}
+          </span>
+        ))}
+      </div>
     </button>
   )
 }
