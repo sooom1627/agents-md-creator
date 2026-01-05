@@ -1,0 +1,15 @@
+# Code Rabbit Configuration
+# Disable Code Rabbit for this repository
+
+reviews:
+  # Disable all reviews
+  enabled: false
+
+chat:
+  # Disable chat features
+  enabled: false
+
+# Alternatively, you can exclude all files
+# path_filters:
+#   excluded:
+#     - "**/*"
