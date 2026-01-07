@@ -1,23 +1,43 @@
 import { render, screen } from '@testing-library/react'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import userEvent from '@testing-library/user-event'
+import { WizardProvider } from '@/features/wizard/context'
 import WizardPage from './page'
 
+vi.mock('@/features/wizard/hooks', async () => {
+  const actual = await vi.importActual('@/features/wizard/hooks')
+  return {
+    ...actual,
+    useWizardNavigation: () => ({
+      navigateToStep: vi.fn(),
+      navigateToNextStep: vi.fn(),
+      navigateToPreviousStep: vi.fn(),
+    }),
+  }
+})
+
+const renderWithProvider = (ui: React.ReactElement) => {
+  return render(<WizardProvider>{ui}</WizardProvider>)
+}
+
 describe('Wizard Page', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
   it('renders the wizard header with step indicator', () => {
-    render(<WizardPage />)
+    renderWithProvider(<WizardPage />)
     const stepIndicator = screen.getByText(/Step 1\/6/)
     expect(stepIndicator).toBeInTheDocument()
   })
 
   it('renders progress bar', () => {
-    render(<WizardPage />)
+    renderWithProvider(<WizardPage />)
     const progressBar = screen.getByRole('progressbar')
     expect(progressBar).toBeInTheDocument()
   })
 
   it('renders Step 1 heading', () => {
-    render(<WizardPage />)
+    renderWithProvider(<WizardPage />)
     const heading = screen.getByRole('heading', {
       name: /^プロジェクト基本情報$/i,
       level: 2,
@@ -26,20 +46,20 @@ describe('Wizard Page', () => {
   })
 
   it('renders project name input', () => {
-    render(<WizardPage />)
+    renderWithProvider(<WizardPage />)
     const input = screen.getByLabelText(/プロジェクト名/i)
     expect(input).toBeInTheDocument()
     expect(input).toHaveAttribute('type', 'text')
   })
 
   it('renders project purpose textarea', () => {
-    render(<WizardPage />)
+    renderWithProvider(<WizardPage />)
     const textarea = screen.getByLabelText(/プロジェクトの目的/i)
     expect(textarea).toBeInTheDocument()
   })
 
   it('renders development phase radio buttons', () => {
-    render(<WizardPage />)
+    renderWithProvider(<WizardPage />)
     expect(screen.getByLabelText(/新規開発/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/機能追加/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/リファクタリング/i)).toBeInTheDocument()
@@ -47,27 +67,27 @@ describe('Wizard Page', () => {
   })
 
   it('renders next button', () => {
-    render(<WizardPage />)
+    renderWithProvider(<WizardPage />)
     const nextButton = screen.getByRole('button', { name: /次へ/i })
     expect(nextButton).toBeInTheDocument()
   })
 
   describe('Preview Area', () => {
     it('renders preview area heading', () => {
-      render(<WizardPage />)
+      renderWithProvider(<WizardPage />)
       const heading = screen.getByRole('heading', { name: /プレビュー/i })
       expect(heading).toBeInTheDocument()
     })
 
     it('displays preview content in code block', () => {
-      render(<WizardPage />)
+      renderWithProvider(<WizardPage />)
       const codeBlock = screen.getByText(/# Project:/)
       expect(codeBlock).toBeInTheDocument()
     })
 
     it('updates preview when project name is entered', async () => {
       const user = userEvent.setup()
-      render(<WizardPage />)
+      renderWithProvider(<WizardPage />)
 
       const input = screen.getByLabelText(/プロジェクト名/i)
       await user.type(input, 'my-awesome-app')
@@ -77,7 +97,7 @@ describe('Wizard Page', () => {
 
     it('updates preview when project purpose is entered', async () => {
       const user = userEvent.setup()
-      render(<WizardPage />)
+      renderWithProvider(<WizardPage />)
 
       const textarea = screen.getByLabelText(/プロジェクトの目的/i)
       await user.type(textarea, '素晴らしいプロジェクト')
@@ -87,7 +107,7 @@ describe('Wizard Page', () => {
 
     it('updates preview when development phase is selected', async () => {
       const user = userEvent.setup()
-      render(<WizardPage />)
+      renderWithProvider(<WizardPage />)
 
       const radio = screen.getByLabelText(/新規開発/i)
       await user.click(radio)
