@@ -9,6 +9,8 @@ describe('useWizardForm', () => {
     expect(result.current.formData.projectName).toBe('')
     expect(result.current.formData.projectPurpose).toBe('')
     expect(result.current.formData.developmentPhase).toBeNull()
+    expect(result.current.formData.selectedRoles).toEqual([])
+    expect(result.current.formData.customRole).toBe('')
   })
 
   it('updates project name', () => {
@@ -55,5 +57,31 @@ describe('useWizardForm', () => {
     })
 
     expect(result.current.previewMarkdown).toContain('# Project: test-project')
+  })
+
+  it('toggles role selection', () => {
+    const { result } = renderHook(() => useWizardForm())
+
+    act(() => {
+      result.current.toggleRole('fullstack')
+    })
+
+    expect(result.current.formData.selectedRoles).toContain('fullstack')
+
+    act(() => {
+      result.current.toggleRole('fullstack')
+    })
+
+    expect(result.current.formData.selectedRoles).not.toContain('fullstack')
+  })
+
+  it('updates custom role', () => {
+    const { result } = renderHook(() => useWizardForm())
+
+    act(() => {
+      result.current.setCustomRole('Custom role description')
+    })
+
+    expect(result.current.formData.customRole).toBe('Custom role description')
   })
 })
