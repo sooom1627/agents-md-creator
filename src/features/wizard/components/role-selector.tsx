@@ -56,12 +56,13 @@ export const RoleSelector = ({
       )}
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {AI_ROLES.map((role) => (
+        {AI_ROLES.map((role, index) => (
           <RoleCard
             key={role.id}
             role={role}
             isSelected={selectedRoles.includes(role.id)}
             onToggle={onToggleRole}
+            index={index}
           />
         ))}
       </div>

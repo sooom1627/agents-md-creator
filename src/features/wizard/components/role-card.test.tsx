@@ -20,7 +20,9 @@ const mockRole: AIRole = {
 
 describe('RoleCard', () => {
   it('renders role information', () => {
-    render(<RoleCard role={mockRole} isSelected={false} onToggle={() => {}} />)
+    render(
+      <RoleCard role={mockRole} isSelected={false} onToggle={() => {}} index={0} />
+    )
 
     expect(screen.getByText('🎯')).toBeInTheDocument()
     expect(screen.getByText('フルスタック重視')).toBeInTheDocument()
@@ -30,14 +32,18 @@ describe('RoleCard', () => {
   })
 
   it('shows selected state', () => {
-    render(<RoleCard role={mockRole} isSelected={true} onToggle={() => {}} />)
+    render(
+      <RoleCard role={mockRole} isSelected={true} onToggle={() => {}} index={0} />
+    )
 
     const card = screen.getByRole('button')
     expect(card).toHaveClass('ring-2')
   })
 
   it('shows unselected state', () => {
-    render(<RoleCard role={mockRole} isSelected={false} onToggle={() => {}} />)
+    render(
+      <RoleCard role={mockRole} isSelected={false} onToggle={() => {}} index={0} />
+    )
 
     const card = screen.getByRole('button')
     expect(card).not.toHaveClass('ring-2')
@@ -46,7 +52,9 @@ describe('RoleCard', () => {
   it('calls onToggle when clicked', async () => {
     const onToggle = vi.fn()
     const user = userEvent.setup()
-    render(<RoleCard role={mockRole} isSelected={false} onToggle={onToggle} />)
+    render(
+      <RoleCard role={mockRole} isSelected={false} onToggle={onToggle} index={0} />
+    )
 
     const card = screen.getByRole('button')
     await user.click(card)
@@ -56,7 +64,9 @@ describe('RoleCard', () => {
 
   it('shows tooltip on hover', async () => {
     const user = userEvent.setup()
-    render(<RoleCard role={mockRole} isSelected={false} onToggle={() => {}} />)
+    render(
+      <RoleCard role={mockRole} isSelected={false} onToggle={() => {}} index={0} />
+    )
 
     const card = screen.getByRole('button')
     await user.hover(card)
@@ -64,5 +74,55 @@ describe('RoleCard', () => {
     expect(
       screen.getByText(/フロント\/バック両方を触るプロジェクト/)
     ).toBeInTheDocument()
+  })
+
+  it('has proper ARIA attributes', () => {
+    render(
+      <RoleCard role={mockRole} isSelected={true} onToggle={() => {}} index={0} />
+    )
+
+    const card = screen.getByRole('button')
+    expect(card).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('shows aria-describedby when hovered', async () => {
+    const user = userEvent.setup()
+    render(
+      <RoleCard role={mockRole} isSelected={false} onToggle={() => {}} index={0} />
+    )
+
+    const card = screen.getByRole('button')
+    await user.hover(card)
+
+    expect(card).toHaveAttribute('aria-describedby', 'role-preview-fullstack')
+    expect(screen.getByRole('tooltip')).toBeInTheDocument()
+  })
+
+  it('positions preview on the right for rightmost column in lg grid (index % 3 === 2)', async () => {
+    const user = userEvent.setup()
+    render(
+      <RoleCard role={mockRole} isSelected={false} onToggle={() => {}} index={2} />
+    )
+
+    const card = screen.getByRole('button')
+    await user.hover(card)
+
+    const tooltip = screen.getByRole('tooltip')
+    expect(tooltip).toHaveClass('lg:right-0')
+    expect(tooltip).toHaveClass('lg:left-auto')
+  })
+
+  it('positions preview on the left for left/center columns in lg grid (index % 3 !== 2)', async () => {
+    const user = userEvent.setup()
+    render(
+      <RoleCard role={mockRole} isSelected={false} onToggle={() => {}} index={0} />
+    )
+
+    const card = screen.getByRole('button')
+    await user.hover(card)
+
+    const tooltip = screen.getByRole('tooltip')
+    expect(tooltip).toHaveClass('left-0')
+    expect(tooltip).not.toHaveClass('lg:right-0')
   })
 })
