@@ -164,4 +164,148 @@ describe('generateMarkdownPreview', () => {
     expect(result).toContain('full-stack')
     expect(result).toContain('GraphQL')
   })
+
+  it('generates Tech Stack section with frontend techs', () => {
+    const formData: WizardFormData = {
+      projectName: 'test-app',
+      projectPurpose: '',
+      developmentPhase: null,
+      selectedRoles: [],
+      customRole: '',
+      techStack: {
+        frontend: [{ id: 'nextjs', version: '15' }, { id: 'react' }],
+        backend: [],
+        database: [],
+        styling: [],
+        testing: [],
+        tools: [],
+        other: '',
+      },
+    }
+
+    const result = generateMarkdownPreview(formData)
+
+    expect(result).toContain('## Tech Stack')
+    expect(result).toContain('### Frontend')
+    expect(result).toContain('Next.js 15')
+    expect(result).toContain('React')
+  })
+
+  it('shows tech without version when version not specified', () => {
+    const formData: WizardFormData = {
+      projectName: 'test-app',
+      projectPurpose: '',
+      developmentPhase: null,
+      selectedRoles: [],
+      customRole: '',
+      techStack: {
+        frontend: [{ id: 'react' }],
+        backend: [],
+        database: [],
+        styling: [],
+        testing: [],
+        tools: [],
+        other: '',
+      },
+    }
+
+    const result = generateMarkdownPreview(formData)
+
+    expect(result).toContain('### Frontend')
+    expect(result).toContain('- React')
+    expect(result).not.toContain('React undefined')
+  })
+
+  it('does not render category section when no techs selected', () => {
+    const formData: WizardFormData = {
+      projectName: 'test-app',
+      projectPurpose: '',
+      developmentPhase: null,
+      selectedRoles: [],
+      customRole: '',
+      techStack: {
+        frontend: [{ id: 'react' }],
+        backend: [],
+        database: [],
+        styling: [],
+        testing: [],
+        tools: [],
+        other: '',
+      },
+    }
+
+    const result = generateMarkdownPreview(formData)
+
+    expect(result).toContain('### Frontend')
+    expect(result).not.toContain('### Backend')
+    expect(result).not.toContain('### Database')
+  })
+
+  it('renders all 6 tech categories when all have selections', () => {
+    const formData: WizardFormData = {
+      projectName: 'test-app',
+      projectPurpose: '',
+      developmentPhase: null,
+      selectedRoles: [],
+      customRole: '',
+      techStack: {
+        frontend: [{ id: 'nextjs', version: '15' }],
+        backend: [{ id: 'nodejs' }],
+        database: [{ id: 'postgresql', version: '16' }],
+        styling: [{ id: 'tailwind' }],
+        testing: [{ id: 'vitest' }],
+        tools: [{ id: 'typescript' }],
+        other: '',
+      },
+    }
+
+    const result = generateMarkdownPreview(formData)
+
+    expect(result).toContain('### Frontend')
+    expect(result).toContain('### Backend')
+    expect(result).toContain('### Database')
+    expect(result).toContain('### Styling')
+    expect(result).toContain('### Testing')
+    expect(result).toContain('### Tools')
+  })
+
+  it('renders Other section when otherTechs has value', () => {
+    const formData: WizardFormData = {
+      projectName: 'test-app',
+      projectPurpose: '',
+      developmentPhase: null,
+      selectedRoles: [],
+      customRole: '',
+      techStack: {
+        frontend: [],
+        backend: [],
+        database: [],
+        styling: [],
+        testing: [],
+        tools: [],
+        other: 'Zod, React Hook Form, Framer Motion',
+      },
+    }
+
+    const result = generateMarkdownPreview(formData)
+
+    expect(result).toContain('## Tech Stack')
+    expect(result).toContain('### Other')
+    expect(result).toContain('Zod, React Hook Form, Framer Motion')
+  })
+
+  it('does not render Tech Stack section when no techs selected', () => {
+    const formData: WizardFormData = {
+      projectName: 'test-app',
+      projectPurpose: '',
+      developmentPhase: null,
+      selectedRoles: [],
+      customRole: '',
+      techStack: createEmptyTechStack(),
+    }
+
+    const result = generateMarkdownPreview(formData)
+
+    expect(result).not.toContain('## Tech Stack')
+  })
 })
