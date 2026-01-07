@@ -32,7 +32,7 @@ export default function Step2Page() {
 
       <main className="flex flex-1 overflow-hidden">
         <div className="mx-auto flex w-full max-w-7xl gap-6">
-          <div className="flex-1 overflow-y-auto px-6 py-8">
+          <div className="flex-1 overflow-y-auto overflow-x-visible px-6 py-8">
             <div className="mx-auto max-w-4xl">
               <h2 className="mb-8 text-2xl font-bold text-black dark:text-zinc-50">
                 AIの役割

@@ -69,9 +69,10 @@ export const RoleCard = ({
           id={`role-preview-${role.id}`}
           role="tooltip"
           className={cn(
-            'absolute top-full z-10 mt-2 min-w-[320px] max-w-[400px] rounded-lg',
-            'border-2 border-[#0057A7] bg-white p-4 shadow-lg',
+            'absolute top-full z-50 mt-2 min-w-[320px] max-w-[400px] rounded-lg',
+            'border-2 border-[#0057A7] bg-white p-4 shadow-xl',
             'dark:border-[#0057A7] dark:bg-zinc-900',
+            'pointer-events-none',
             // モバイル: 常に左揃え
             'left-0',
             // md画面: 2列グリッドの右列は右揃え
