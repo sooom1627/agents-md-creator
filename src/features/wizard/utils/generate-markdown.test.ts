@@ -165,7 +165,7 @@ describe('generateMarkdownPreview', () => {
     expect(result).toContain('GraphQL')
   })
 
-  it('generates Tech Stack section with frontend techs', () => {
+  it('generates Tech Stack section with frontend techs in YAML format', () => {
     const formData: WizardFormData = {
       projectName: 'test-app',
       projectPurpose: '',
@@ -173,7 +173,7 @@ describe('generateMarkdownPreview', () => {
       selectedRoles: [],
       customRole: '',
       techStack: {
-        frontend: [{ id: 'nextjs', version: '15' }, { id: 'react' }],
+        frontend: [{ id: 'nextjs', version: '15' }],
         backend: [],
         database: [],
         styling: [],
@@ -186,9 +186,9 @@ describe('generateMarkdownPreview', () => {
     const result = generateMarkdownPreview(formData)
 
     expect(result).toContain('## Tech Stack')
-    expect(result).toContain('### Frontend')
-    expect(result).toContain('Next.js 15')
-    expect(result).toContain('React')
+    expect(result).toContain('```yaml')
+    expect(result).toContain('Frontend: Next.js 15')
+    expect(result).toContain('```')
   })
 
   it('shows tech without version when version not specified', () => {
@@ -199,7 +199,7 @@ describe('generateMarkdownPreview', () => {
       selectedRoles: [],
       customRole: '',
       techStack: {
-        frontend: [{ id: 'react' }],
+        frontend: [{ id: 'nextjs' }],
         backend: [],
         database: [],
         styling: [],
@@ -211,12 +211,11 @@ describe('generateMarkdownPreview', () => {
 
     const result = generateMarkdownPreview(formData)
 
-    expect(result).toContain('### Frontend')
-    expect(result).toContain('- React')
-    expect(result).not.toContain('React undefined')
+    expect(result).toContain('Frontend: Next.js')
+    expect(result).not.toContain('Next.js undefined')
   })
 
-  it('does not render category section when no techs selected', () => {
+  it('does not render category when no techs selected', () => {
     const formData: WizardFormData = {
       projectName: 'test-app',
       projectPurpose: '',
@@ -224,7 +223,7 @@ describe('generateMarkdownPreview', () => {
       selectedRoles: [],
       customRole: '',
       techStack: {
-        frontend: [{ id: 'react' }],
+        frontend: [{ id: 'nextjs' }],
         backend: [],
         database: [],
         styling: [],
@@ -236,12 +235,12 @@ describe('generateMarkdownPreview', () => {
 
     const result = generateMarkdownPreview(formData)
 
-    expect(result).toContain('### Frontend')
-    expect(result).not.toContain('### Backend')
-    expect(result).not.toContain('### Database')
+    expect(result).toContain('Frontend: Next.js')
+    expect(result).not.toContain('Backend:')
+    expect(result).not.toContain('Database:')
   })
 
-  it('renders all 6 tech categories when all have selections', () => {
+  it('renders all 6 tech categories when all have selections in YAML format', () => {
     const formData: WizardFormData = {
       projectName: 'test-app',
       projectPurpose: '',
@@ -250,7 +249,7 @@ describe('generateMarkdownPreview', () => {
       customRole: '',
       techStack: {
         frontend: [{ id: 'nextjs', version: '15' }],
-        backend: [{ id: 'nodejs' }],
+        backend: [{ id: 'nodejs-express' }],
         database: [{ id: 'postgresql', version: '16' }],
         styling: [{ id: 'tailwind' }],
         testing: [{ id: 'vitest' }],
@@ -261,12 +260,12 @@ describe('generateMarkdownPreview', () => {
 
     const result = generateMarkdownPreview(formData)
 
-    expect(result).toContain('### Frontend')
-    expect(result).toContain('### Backend')
-    expect(result).toContain('### Database')
-    expect(result).toContain('### Styling')
-    expect(result).toContain('### Testing')
-    expect(result).toContain('### Tools')
+    expect(result).toContain('Frontend: Next.js 15')
+    expect(result).toContain('Backend: Node.js + Express')
+    expect(result).toContain('Database: PostgreSQL 16')
+    expect(result).toContain('Styling: Tailwind CSS')
+    expect(result).toContain('Testing: Vitest')
+    expect(result).toContain('Tools: TypeScript')
   })
 
   it('renders Other section when otherTechs has value', () => {
@@ -290,8 +289,7 @@ describe('generateMarkdownPreview', () => {
     const result = generateMarkdownPreview(formData)
 
     expect(result).toContain('## Tech Stack')
-    expect(result).toContain('### Other')
-    expect(result).toContain('Zod, React Hook Form, Framer Motion')
+    expect(result).toContain('Other: Zod, React Hook Form, Framer Motion')
   })
 
   it('does not render Tech Stack section when no techs selected', () => {

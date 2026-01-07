@@ -3,24 +3,6 @@ import type { Tech, TechCategory } from '../types'
 export const TECH_STACK: Tech[] = [
   // ===== Frontend =====
   {
-    id: 'react',
-    name: 'React',
-    icon: '⚛️',
-    description: 'UIライブラリのデファクトスタンダード',
-    category: 'frontend',
-    isPopular: true,
-    hasVersions: true,
-    versions: ['19', '18', '17'],
-    tooltip: {
-      whenToUse: [
-        'コンポーネントベースのUIが必要',
-        '豊富なエコシステムを活用したい',
-        'SPAやインタラクティブなUI',
-      ],
-      agentsMdExample: 'React 18 with functional components and hooks',
-    },
-  },
-  {
     id: 'nextjs',
     name: 'Next.js',
     icon: '▲',
@@ -39,45 +21,12 @@ export const TECH_STACK: Tech[] = [
     },
   },
   {
-    id: 'vuejs',
-    name: 'Vue.js',
-    icon: '💚',
-    description: 'シンプルで学習コストが低い',
-    category: 'frontend',
-    hasVersions: true,
-    versions: ['3', '2'],
-    tooltip: {
-      whenToUse: [
-        '学習コストを抑えたい',
-        'プログレッシブに導入したい',
-        'シンプルな構文を好む',
-      ],
-      agentsMdExample: 'Vue.js 3 with Composition API and TypeScript',
-    },
-  },
-  {
-    id: 'svelte',
-    name: 'Svelte',
-    icon: '🔥',
-    description: 'コンパイラベースで高速',
-    category: 'frontend',
-    hasVersions: false,
-    tooltip: {
-      whenToUse: [
-        'ランタイムのオーバーヘッドを削減',
-        '高速なパフォーマンスが必要',
-        'シンプルな記法を求める',
-      ],
-      agentsMdExample: 'Svelte with minimal runtime overhead',
-    },
-  },
-  {
     id: 'vite',
     name: 'Vite',
     icon: '⚡',
-    description: '高速ビルドツール',
+    description: '高速ビルドツール（Next.js以外の場合）',
     category: 'frontend',
-    isPopular: true,
+    isPopular: false,
     hasVersions: false,
     tooltip: {
       whenToUse: [

@@ -16,10 +16,10 @@ const formatTechList = (techSelections: TechSelection[]): string => {
       if (!tech) return null
 
       const versionSuffix = selection.version ? ` ${selection.version}` : ''
-      return `- ${tech.name}${versionSuffix}`
+      return `${tech.name}${versionSuffix}`
     })
     .filter(Boolean)
-    .join('\n')
+    .join(', ')
 }
 
 export const generateMarkdownPreview = (formData: WizardFormData): string => {
@@ -88,7 +88,7 @@ export const generateMarkdownPreview = (formData: WizardFormData): string => {
     techStack.other
 
   if (hasTechStack) {
-    sections.push('\n## Tech Stack')
+    sections.push('\n## Tech Stack\n\n```yaml')
 
     // Iterate through each category
     const categories: TechCategory[] = [
@@ -104,16 +104,17 @@ export const generateMarkdownPreview = (formData: WizardFormData): string => {
       const categoryTechs = techStack[category]
       if (categoryTechs.length > 0) {
         const categoryLabel = TECH_CATEGORIES[category].label
-        sections.push(`\n### ${categoryLabel}`)
-        sections.push(formatTechList(categoryTechs))
+        const techList = formatTechList(categoryTechs)
+        sections.push(`${categoryLabel}: ${techList}`)
       }
     })
 
     // Other techs
     if (techStack.other) {
-      sections.push('\n### Other')
-      sections.push(techStack.other)
+      sections.push(`Other: ${techStack.other}`)
     }
+
+    sections.push('```')
   }
 
   return sections.join('\n')

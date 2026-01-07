@@ -41,7 +41,7 @@ describe('TechSelector', () => {
 
     // Should show frontend techs by default
     expect(screen.getByText('Next.js')).toBeInTheDocument()
-    expect(screen.getByText('React')).toBeInTheDocument()
+    expect(screen.getByText('Vite')).toBeInTheDocument()
   })
 
   it('switches to backend category when tab clicked', async () => {
@@ -105,11 +105,11 @@ describe('TechSelector', () => {
       />
     )
 
-    // Click on Vue.js card (in frontend category)
-    const vueButton = screen.getByText('Vue.js')
-    await user.click(vueButton)
+    // Click on Vite card (in frontend category)
+    const viteButton = screen.getByText('Vite')
+    await user.click(viteButton)
 
-    expect(onToggleTech).toHaveBeenCalledWith('frontend', 'vuejs')
+    expect(onToggleTech).toHaveBeenCalledWith('frontend', 'vite')
   })
 
   it('calls onVersionChange with correct parameters', async () => {
