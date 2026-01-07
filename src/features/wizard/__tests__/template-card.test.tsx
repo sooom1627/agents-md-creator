@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
-import { TemplateCard } from './template-card'
+import { TemplateCard } from '../components/template-card'
 import type { Template } from '../types'
 
 const mockTemplate: Template = {

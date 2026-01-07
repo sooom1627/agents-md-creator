@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
-import { WizardProgressBar } from './wizard-progress-bar'
+import { WizardProgressBar } from '../components/wizard-progress-bar'
 
 describe('WizardProgressBar', () => {
   it('renders progress bar with correct aria attributes', () => {

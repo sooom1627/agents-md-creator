@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { generateAIRoleDefinition } from './generate-ai-role-definition'
+import { generateAIRoleDefinition } from '../utils/generate-ai-role-definition'
 import type { AIRolePreset } from '../types'
 
 describe('generateAIRoleDefinition', () => {

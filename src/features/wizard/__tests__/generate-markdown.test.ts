@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { generateMarkdownPreview } from './generate-markdown'
+import { generateMarkdownPreview } from '../utils/generate-markdown'
 import type { WizardFormData } from '../types'
 
 describe('generateMarkdownPreview', () => {

@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import userEvent from '@testing-library/user-event'
 import { WizardProvider } from '@/features/wizard/context'
-import WizardPage from './page'
+import WizardPage from '../page'
 
 vi.mock('@/features/wizard/hooks', async () => {
   const actual = await vi.importActual('@/features/wizard/hooks')

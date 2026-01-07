@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import userEvent from '@testing-library/user-event'
-import { RoleCard } from './role-card'
+import { RoleCard } from '../components/role-card'
 import type { AIRole } from '../types'
 
 const mockRole: AIRole = {

@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react'
 import { describe, it, expect, beforeEach } from 'vitest'
-import { WizardProvider, useWizard } from './wizard-context'
+import { WizardProvider, useWizard } from '../context/wizard-context'
 import type { ReactNode } from 'react'
 
 const wrapper = ({ children }: { children: ReactNode }) => (

@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
-import { CodeBlock } from './code-block'
+import { CodeBlock } from '../components/code-block'
 
 describe('CodeBlock', () => {
   it('renders code content', () => {

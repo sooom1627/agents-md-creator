@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
-import { useWizardForm } from './use-wizard-form'
+import { useWizardForm } from '../hooks/use-wizard-form'
 
 describe('useWizardForm', () => {
   it('initializes with empty form values', () => {

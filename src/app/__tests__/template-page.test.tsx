@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import userEvent from '@testing-library/user-event'
-import TemplatePage from './page'
+import TemplatePage from '../template/page'
 
 describe('Template Selection Page', () => {
   it('renders the page heading', () => {
