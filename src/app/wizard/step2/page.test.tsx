@@ -1,24 +1,44 @@
 import { render, screen } from '@testing-library/react'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import userEvent from '@testing-library/user-event'
+import { WizardProvider } from '@/features/wizard/context'
 import Step2Page from './page'
 
+vi.mock('@/features/wizard/hooks', async () => {
+  const actual = await vi.importActual('@/features/wizard/hooks')
+  return {
+    ...actual,
+    useWizardNavigation: () => ({
+      navigateToStep: vi.fn(),
+      navigateToNextStep: vi.fn(),
+      navigateToPreviousStep: vi.fn(),
+    }),
+  }
+})
+
+const renderWithProvider = (ui: React.ReactElement) => {
+  return render(<WizardProvider>{ui}</WizardProvider>)
+}
+
 describe('Wizard Step 2 Page', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
   it('renders the wizard header with step 2 indicator', () => {
-    render(<Step2Page />)
+    renderWithProvider(<Step2Page />)
     const stepIndicator = screen.getByText(/Step 2\/6/)
     expect(stepIndicator).toBeInTheDocument()
   })
 
   it('renders progress bar', () => {
-    render(<Step2Page />)
+    renderWithProvider(<Step2Page />)
     const progressBar = screen.getByRole('progressbar')
     expect(progressBar).toBeInTheDocument()
     expect(progressBar).toHaveAttribute('aria-valuenow', '2')
   })
 
   it('renders Step 2 heading', () => {
-    render(<Step2Page />)
+    renderWithProvider(<Step2Page />)
     const heading = screen.getByRole('heading', {
       name: /^AIの役割$/i,
       level: 2,
@@ -27,14 +47,14 @@ describe('Wizard Step 2 Page', () => {
   })
 
   it('renders info box', () => {
-    render(<Step2Page />)
+    renderWithProvider(<Step2Page />)
     expect(
       screen.getByText(/AIに「どんなエンジニアとして振る舞って欲しいか」を伝えます/)
     ).toBeInTheDocument()
   })
 
   it('renders all 6 role cards', () => {
-    render(<Step2Page />)
+    renderWithProvider(<Step2Page />)
     expect(screen.getByText('フルスタック重視')).toBeInTheDocument()
     expect(screen.getByText('UI/UX スペシャリスト')).toBeInTheDocument()
     expect(screen.getByText('セキュリティ第一')).toBeInTheDocument()
@@ -45,7 +65,7 @@ describe('Wizard Step 2 Page', () => {
 
   it('allows selecting multiple roles', async () => {
     const user = userEvent.setup()
-    render(<Step2Page />)
+    renderWithProvider(<Step2Page />)
 
     const fullstackCard = screen
       .getByText('フルスタック重視')
@@ -61,25 +81,25 @@ describe('Wizard Step 2 Page', () => {
   })
 
   it('renders custom role input section', () => {
-    render(<Step2Page />)
+    renderWithProvider(<Step2Page />)
     expect(
       screen.getByText(/さらに細かく指定する（上級者向け）/)
     ).toBeInTheDocument()
   })
 
   it('renders role examples accordion', () => {
-    render(<Step2Page />)
+    renderWithProvider(<Step2Page />)
     expect(screen.getByText('良い役割定義の例')).toBeInTheDocument()
   })
 
   it('renders next button', () => {
-    render(<Step2Page />)
+    renderWithProvider(<Step2Page />)
     const nextButton = screen.getByRole('button', { name: /次へ/i })
     expect(nextButton).toBeInTheDocument()
   })
 
   it('renders preview area', () => {
-    render(<Step2Page />)
+    renderWithProvider(<Step2Page />)
     const heading = screen.getByRole('heading', { name: /プレビュー/i })
     expect(heading).toBeInTheDocument()
   })

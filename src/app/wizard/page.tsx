@@ -1,6 +1,7 @@
 'use client'
 
-import { useWizardForm } from '@/features/wizard/hooks'
+import { useWizard } from '@/features/wizard/context'
+import { useWizardNavigation } from '@/features/wizard/hooks'
 import {
   WizardHeader,
   ProjectNameInput,
@@ -18,7 +19,14 @@ export default function WizardPage() {
     setProjectPurpose,
     setDevelopmentPhase,
     previewMarkdown,
-  } = useWizardForm()
+    canGoNext,
+  } = useWizard()
+
+  const { navigateToNextStep } = useWizardNavigation()
+
+  const handleNext = () => {
+    navigateToNextStep(1)
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-black">
@@ -57,7 +65,7 @@ export default function WizardPage() {
         </div>
       </main>
 
-      <WizardFooter />
+      <WizardFooter onNext={handleNext} nextDisabled={!canGoNext} />
     </div>
   )
 }
