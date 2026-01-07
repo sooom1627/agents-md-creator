@@ -111,4 +111,38 @@ describe('generateMarkdownPreview', () => {
     expect(result).toContain('- セキュリティ第一')
     expect(result).toContain('セキュリティを重視した設計')
   })
+
+  it('generates AI role definition in code block', () => {
+    const formData: WizardFormData = {
+      projectName: 'test-app',
+      projectPurpose: '',
+      developmentPhase: null,
+      selectedRoles: ['fullstack', 'tdd'],
+      customRole: '',
+    }
+
+    const result = generateMarkdownPreview(formData)
+
+    expect(result).toContain('## AI Role Definition')
+    expect(result).toContain('```')
+    expect(result).toContain('You are')
+    expect(result).toContain('full-stack')
+    expect(result).toContain('TDD')
+  })
+
+  it('includes AI role definition with custom role', () => {
+    const formData: WizardFormData = {
+      projectName: 'test-app',
+      projectPurpose: '',
+      developmentPhase: null,
+      selectedRoles: ['fullstack'],
+      customRole: 'GraphQL APIに精通',
+    }
+
+    const result = generateMarkdownPreview(formData)
+
+    expect(result).toContain('## AI Role Definition')
+    expect(result).toContain('full-stack')
+    expect(result).toContain('GraphQL')
+  })
 })

@@ -1,5 +1,6 @@
 import type { WizardFormData } from '../types'
 import { AI_ROLES } from '../constants'
+import { generateAIRoleDefinition } from './generate-ai-role-definition'
 
 const PHASE_LABELS: Record<string, string> = {
   new: '新規開発',
@@ -53,6 +54,12 @@ export const generateMarkdownPreview = (formData: WizardFormData): string => {
     // Custom role description
     if (customRole) {
       sections.push(`\n${customRole}`)
+    }
+
+    // AI Role Definition (generated prompt)
+    const roleDefinition = generateAIRoleDefinition(selectedRoles, customRole)
+    if (roleDefinition) {
+      sections.push('\n## AI Role Definition\n\n```\n' + roleDefinition + '\n```')
     }
   }
 

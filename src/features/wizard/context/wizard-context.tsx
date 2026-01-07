@@ -112,9 +112,20 @@ export const WizardProvider = ({ children, initialStep = 1 }: WizardProviderProp
   })
 
   const toggleRole = useCallback((roleId: AIRolePreset) => {
-    setSelectedRoles((prev) =>
-      prev.includes(roleId) ? prev.filter((id) => id !== roleId) : [...prev, roleId]
-    )
+    setSelectedRoles((prev) => {
+      // If role is already selected, deselect it
+      if (prev.includes(roleId)) {
+        return prev.filter((id) => id !== roleId)
+      }
+
+      // If already have 3 roles selected, don't add more
+      if (prev.length >= 3) {
+        return prev
+      }
+
+      // Add the new role
+      return [...prev, roleId]
+    })
   }, [])
 
   const formData: WizardFormData = useMemo(
