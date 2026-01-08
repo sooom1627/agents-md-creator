@@ -2,6 +2,16 @@ import { describe, it, expect } from 'vitest'
 import { generateMarkdownPreview } from './generate-markdown'
 import type { WizardFormData } from '../types'
 
+const createEmptyTechStack = () => ({
+  frontend: [],
+  backend: [],
+  database: [],
+  styling: [],
+  testing: [],
+  tools: [],
+  other: '',
+})
+
 describe('generateMarkdownPreview', () => {
   it('generates markdown with project name', () => {
     const formData: WizardFormData = {
@@ -10,6 +20,7 @@ describe('generateMarkdownPreview', () => {
       developmentPhase: null,
       selectedRoles: [],
       customRole: '',
+      techStack: createEmptyTechStack(),
     }
 
     const result = generateMarkdownPreview(formData)
@@ -24,6 +35,7 @@ describe('generateMarkdownPreview', () => {
       developmentPhase: null,
       selectedRoles: [],
       customRole: '',
+      techStack: createEmptyTechStack(),
     }
 
     const result = generateMarkdownPreview(formData)
@@ -38,6 +50,7 @@ describe('generateMarkdownPreview', () => {
       developmentPhase: 'new',
       selectedRoles: [],
       customRole: '',
+      techStack: createEmptyTechStack(),
     }
 
     const result = generateMarkdownPreview(formData)
@@ -52,6 +65,7 @@ describe('generateMarkdownPreview', () => {
       developmentPhase: null,
       selectedRoles: ['fullstack', 'tdd'],
       customRole: '',
+      techStack: createEmptyTechStack(),
     }
 
     const result = generateMarkdownPreview(formData)
@@ -68,6 +82,7 @@ describe('generateMarkdownPreview', () => {
       developmentPhase: null,
       selectedRoles: [],
       customRole: 'カスタムロール説明',
+      techStack: createEmptyTechStack(),
     }
 
     const result = generateMarkdownPreview(formData)
@@ -83,6 +98,7 @@ describe('generateMarkdownPreview', () => {
       developmentPhase: null,
       selectedRoles: ['fullstack'],
       customRole: 'さらに詳しい説明',
+      techStack: createEmptyTechStack(),
     }
 
     const result = generateMarkdownPreview(formData)
@@ -99,6 +115,7 @@ describe('generateMarkdownPreview', () => {
       developmentPhase: 'new',
       selectedRoles: ['fullstack', 'security'],
       customRole: 'セキュリティを重視した設計',
+      techStack: createEmptyTechStack(),
     }
 
     const result = generateMarkdownPreview(formData)
@@ -119,6 +136,7 @@ describe('generateMarkdownPreview', () => {
       developmentPhase: null,
       selectedRoles: ['fullstack', 'tdd'],
       customRole: '',
+      techStack: createEmptyTechStack(),
     }
 
     const result = generateMarkdownPreview(formData)
@@ -137,6 +155,7 @@ describe('generateMarkdownPreview', () => {
       developmentPhase: null,
       selectedRoles: ['fullstack'],
       customRole: 'GraphQL APIに精通',
+      techStack: createEmptyTechStack(),
     }
 
     const result = generateMarkdownPreview(formData)
@@ -144,5 +163,147 @@ describe('generateMarkdownPreview', () => {
     expect(result).toContain('## AI Role Definition')
     expect(result).toContain('full-stack')
     expect(result).toContain('GraphQL')
+  })
+
+  it('generates Tech Stack section with frontend techs in YAML format', () => {
+    const formData: WizardFormData = {
+      projectName: 'test-app',
+      projectPurpose: '',
+      developmentPhase: null,
+      selectedRoles: [],
+      customRole: '',
+      techStack: {
+        frontend: [{ id: 'nextjs', version: '15' }],
+        backend: [],
+        database: [],
+        styling: [],
+        testing: [],
+        tools: [],
+        other: '',
+      },
+    }
+
+    const result = generateMarkdownPreview(formData)
+
+    expect(result).toContain('## Tech Stack')
+    expect(result).toContain('```yaml')
+    expect(result).toContain('Frontend: Next.js 15')
+    expect(result).toContain('```')
+  })
+
+  it('shows tech without version when version not specified', () => {
+    const formData: WizardFormData = {
+      projectName: 'test-app',
+      projectPurpose: '',
+      developmentPhase: null,
+      selectedRoles: [],
+      customRole: '',
+      techStack: {
+        frontend: [{ id: 'nextjs' }],
+        backend: [],
+        database: [],
+        styling: [],
+        testing: [],
+        tools: [],
+        other: '',
+      },
+    }
+
+    const result = generateMarkdownPreview(formData)
+
+    expect(result).toContain('Frontend: Next.js')
+    expect(result).not.toContain('Next.js undefined')
+  })
+
+  it('does not render category when no techs selected', () => {
+    const formData: WizardFormData = {
+      projectName: 'test-app',
+      projectPurpose: '',
+      developmentPhase: null,
+      selectedRoles: [],
+      customRole: '',
+      techStack: {
+        frontend: [{ id: 'nextjs' }],
+        backend: [],
+        database: [],
+        styling: [],
+        testing: [],
+        tools: [],
+        other: '',
+      },
+    }
+
+    const result = generateMarkdownPreview(formData)
+
+    expect(result).toContain('Frontend: Next.js')
+    expect(result).not.toContain('Backend:')
+    expect(result).not.toContain('Database:')
+  })
+
+  it('renders all 6 tech categories when all have selections in YAML format', () => {
+    const formData: WizardFormData = {
+      projectName: 'test-app',
+      projectPurpose: '',
+      developmentPhase: null,
+      selectedRoles: [],
+      customRole: '',
+      techStack: {
+        frontend: [{ id: 'nextjs', version: '15' }],
+        backend: [{ id: 'supabase-backend' }],
+        database: [{ id: 'supabase-postgres' }],
+        styling: [{ id: 'tailwind' }],
+        testing: [{ id: 'vitest' }],
+        tools: [{ id: 'typescript' }],
+        other: '',
+      },
+    }
+
+    const result = generateMarkdownPreview(formData)
+
+    expect(result).toContain('Frontend: Next.js 15')
+    expect(result).toContain('Backend: Supabase')
+    expect(result).toContain('Database: Supabase Postgres')
+    expect(result).toContain('Styling: Tailwind CSS')
+    expect(result).toContain('Testing: Vitest')
+    expect(result).toContain('Tools: TypeScript')
+  })
+
+  it('renders Other section when otherTechs has value', () => {
+    const formData: WizardFormData = {
+      projectName: 'test-app',
+      projectPurpose: '',
+      developmentPhase: null,
+      selectedRoles: [],
+      customRole: '',
+      techStack: {
+        frontend: [],
+        backend: [],
+        database: [],
+        styling: [],
+        testing: [],
+        tools: [],
+        other: 'Zod, React Hook Form, Framer Motion',
+      },
+    }
+
+    const result = generateMarkdownPreview(formData)
+
+    expect(result).toContain('## Tech Stack')
+    expect(result).toContain('Other: Zod, React Hook Form, Framer Motion')
+  })
+
+  it('does not render Tech Stack section when no techs selected', () => {
+    const formData: WizardFormData = {
+      projectName: 'test-app',
+      projectPurpose: '',
+      developmentPhase: null,
+      selectedRoles: [],
+      customRole: '',
+      techStack: createEmptyTechStack(),
+    }
+
+    const result = generateMarkdownPreview(formData)
+
+    expect(result).not.toContain('## Tech Stack')
   })
 })

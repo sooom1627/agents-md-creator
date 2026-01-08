@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useCallback, useEffect, useMemo, type ReactNode } from 'react'
-import type { DevelopmentPhase, AIRolePreset, WizardFormData, WizardStep } from '../types'
+import type { DevelopmentPhase, AIRolePreset, WizardFormData, WizardStep, TechCategory, TechSelection } from '../types'
 import { generateMarkdownPreview } from '../utils'
 
 type WizardContextValue = {
@@ -12,6 +12,9 @@ type WizardContextValue = {
   setDevelopmentPhase: (value: DevelopmentPhase) => void
   toggleRole: (roleId: AIRolePreset) => void
   setCustomRole: (value: string) => void
+  toggleTech: (category: TechCategory, techId: string) => void
+  setTechVersion: (category: TechCategory, techId: string, version: string) => void
+  setOtherTechs: (value: string) => void
   previewMarkdown: string
   goToStep: (step: WizardStep) => void
   goToNextStep: () => void
@@ -111,6 +114,98 @@ export const WizardProvider = ({ children, initialStep = 1 }: WizardProviderProp
     return ''
   })
 
+  // Tech Stack state
+  const [frontendTechs, setFrontendTechs] = useState<TechSelection[]>(() => {
+    if (typeof window === 'undefined') return []
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      try {
+        return JSON.parse(saved).techStack?.frontend || []
+      } catch {
+        return []
+      }
+    }
+    return []
+  })
+
+  const [backendTechs, setBackendTechs] = useState<TechSelection[]>(() => {
+    if (typeof window === 'undefined') return []
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      try {
+        return JSON.parse(saved).techStack?.backend || []
+      } catch {
+        return []
+      }
+    }
+    return []
+  })
+
+  const [databaseTechs, setDatabaseTechs] = useState<TechSelection[]>(() => {
+    if (typeof window === 'undefined') return []
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      try {
+        return JSON.parse(saved).techStack?.database || []
+      } catch {
+        return []
+      }
+    }
+    return []
+  })
+
+  const [stylingTechs, setStylingTechs] = useState<TechSelection[]>(() => {
+    if (typeof window === 'undefined') return []
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      try {
+        return JSON.parse(saved).techStack?.styling || []
+      } catch {
+        return []
+      }
+    }
+    return []
+  })
+
+  const [testingTechs, setTestingTechs] = useState<TechSelection[]>(() => {
+    if (typeof window === 'undefined') return []
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      try {
+        return JSON.parse(saved).techStack?.testing || []
+      } catch {
+        return []
+      }
+    }
+    return []
+  })
+
+  const [toolsTechs, setToolsTechs] = useState<TechSelection[]>(() => {
+    if (typeof window === 'undefined') return []
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      try {
+        return JSON.parse(saved).techStack?.tools || []
+      } catch {
+        return []
+      }
+    }
+    return []
+  })
+
+  const [otherTechs, setOtherTechs] = useState<string>(() => {
+    if (typeof window === 'undefined') return ''
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) {
+      try {
+        return JSON.parse(saved).techStack?.other || ''
+      } catch {
+        return ''
+      }
+    }
+    return ''
+  })
+
   const toggleRole = useCallback((roleId: AIRolePreset) => {
     setSelectedRoles((prev) => {
       // If role is already selected, deselect it
@@ -128,6 +223,50 @@ export const WizardProvider = ({ children, initialStep = 1 }: WizardProviderProp
     })
   }, [])
 
+  // Tech Stack functions
+  const toggleTech = useCallback((category: TechCategory, techId: string) => {
+    const setterMap = {
+      frontend: setFrontendTechs,
+      backend: setBackendTechs,
+      database: setDatabaseTechs,
+      styling: setStylingTechs,
+      testing: setTestingTechs,
+      tools: setToolsTechs,
+    }
+
+    const setter = setterMap[category]
+
+    setter((prev) => {
+      const exists = prev.find((t) => t.id === techId)
+      if (exists) {
+        // Remove if already selected
+        return prev.filter((t) => t.id !== techId)
+      }
+      // Add new tech
+      return [...prev, { id: techId }]
+    })
+  }, [])
+
+  const setTechVersion = useCallback(
+    (category: TechCategory, techId: string, version: string) => {
+      const setterMap = {
+        frontend: setFrontendTechs,
+        backend: setBackendTechs,
+        database: setDatabaseTechs,
+        styling: setStylingTechs,
+        testing: setTestingTechs,
+        tools: setToolsTechs,
+      }
+
+      const setter = setterMap[category]
+
+      setter((prev) =>
+        prev.map((t) => (t.id === techId ? { ...t, version } : t))
+      )
+    },
+    []
+  )
+
   const formData: WizardFormData = useMemo(
     () => ({
       projectName,
@@ -135,8 +274,30 @@ export const WizardProvider = ({ children, initialStep = 1 }: WizardProviderProp
       developmentPhase,
       selectedRoles,
       customRole,
+      techStack: {
+        frontend: frontendTechs,
+        backend: backendTechs,
+        database: databaseTechs,
+        styling: stylingTechs,
+        testing: testingTechs,
+        tools: toolsTechs,
+        other: otherTechs,
+      },
     }),
-    [projectName, projectPurpose, developmentPhase, selectedRoles, customRole]
+    [
+      projectName,
+      projectPurpose,
+      developmentPhase,
+      selectedRoles,
+      customRole,
+      frontendTechs,
+      backendTechs,
+      databaseTechs,
+      stylingTechs,
+      testingTechs,
+      toolsTechs,
+      otherTechs,
+    ]
   )
 
   const previewMarkdown = useMemo(() => generateMarkdownPreview(formData), [formData])
@@ -174,6 +335,9 @@ export const WizardProvider = ({ children, initialStep = 1 }: WizardProviderProp
     setDevelopmentPhase,
     toggleRole,
     setCustomRole,
+    toggleTech,
+    setTechVersion,
+    setOtherTechs,
     previewMarkdown,
     goToStep,
     goToNextStep,

@@ -24,6 +24,15 @@ export const useWizardForm = () => {
       developmentPhase,
       selectedRoles,
       customRole,
+      techStack: {
+        frontend: [],
+        backend: [],
+        database: [],
+        styling: [],
+        testing: [],
+        tools: [],
+        other: '',
+      },
     }),
     [projectName, projectPurpose, developmentPhase, selectedRoles, customRole]
   )

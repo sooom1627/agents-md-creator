@@ -1,5 +1,5 @@
-import type { WizardFormData } from '../types'
-import { AI_ROLES } from '../constants'
+import type { WizardFormData, TechCategory, TechSelection } from '../types'
+import { AI_ROLES, TECH_STACK, TECH_CATEGORIES } from '../constants'
 import { generateAIRoleDefinition } from './generate-ai-role-definition'
 
 const PHASE_LABELS: Record<string, string> = {
@@ -9,6 +9,19 @@ const PHASE_LABELS: Record<string, string> = {
   maintenance: '保守・運用',
 }
 
+const formatTechList = (techSelections: TechSelection[]): string => {
+  return techSelections
+    .map((selection) => {
+      const tech = TECH_STACK.find((t) => t.id === selection.id)
+      if (!tech) return null
+
+      const versionSuffix = selection.version ? ` ${selection.version}` : ''
+      return `${tech.name}${versionSuffix}`
+    })
+    .filter(Boolean)
+    .join(', ')
+}
+
 export const generateMarkdownPreview = (formData: WizardFormData): string => {
   const {
     projectName,
@@ -16,6 +29,7 @@ export const generateMarkdownPreview = (formData: WizardFormData): string => {
     developmentPhase,
     selectedRoles,
     customRole,
+    techStack,
   } = formData
 
   const sections: string[] = []
@@ -61,6 +75,46 @@ export const generateMarkdownPreview = (formData: WizardFormData): string => {
     if (roleDefinition) {
       sections.push('\n## AI Role Definition\n\n```\n' + roleDefinition + '\n```')
     }
+  }
+
+  // Tech Stack
+  const hasTechStack =
+    techStack.frontend.length > 0 ||
+    techStack.backend.length > 0 ||
+    techStack.database.length > 0 ||
+    techStack.styling.length > 0 ||
+    techStack.testing.length > 0 ||
+    techStack.tools.length > 0 ||
+    techStack.other
+
+  if (hasTechStack) {
+    sections.push('\n## Tech Stack\n\n```yaml')
+
+    // Iterate through each category
+    const categories: TechCategory[] = [
+      'frontend',
+      'backend',
+      'database',
+      'styling',
+      'testing',
+      'tools',
+    ]
+
+    categories.forEach((category) => {
+      const categoryTechs = techStack[category]
+      if (categoryTechs.length > 0) {
+        const categoryLabel = TECH_CATEGORIES[category].label
+        const techList = formatTechList(categoryTechs)
+        sections.push(`${categoryLabel}: ${techList}`)
+      }
+    })
+
+    // Other techs
+    if (techStack.other) {
+      sections.push(`Other: ${techStack.other}`)
+    }
+
+    sections.push('```')
   }
 
   return sections.join('\n')
