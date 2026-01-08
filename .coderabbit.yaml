@@ -1,15 +1,6 @@
 # Code Rabbit Configuration
-# Disable Code Rabbit for this repository
+# レビュー機能を無効化
 
 reviews:
-  # Disable all reviews
-  enabled: false
-
-chat:
-  # Disable chat features
-  enabled: false
-
-# Alternatively, you can exclude all files
-# path_filters:
-#   excluded:
-#     - "**/*"
+  auto_review:
+    enabled: false
