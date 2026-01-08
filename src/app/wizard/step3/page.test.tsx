@@ -99,8 +99,8 @@ describe('Wizard Step 3 Page', () => {
     const backendTab = screen.getByRole('button', { name: /Backend/i })
     await user.click(backendTab)
 
-    // Should see Backend technologies
-    expect(screen.getByText('Node.js + Express')).toBeInTheDocument()
+    // Should see Backend technologies (BaaS)
+    expect(screen.getByText('Supabase')).toBeInTheDocument()
   })
 
   it('renders info box with tech stack guidance', () => {

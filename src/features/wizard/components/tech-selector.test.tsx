@@ -59,8 +59,8 @@ describe('TechSelector', () => {
     const backendTab = screen.getByRole('button', { name: /Backend/i })
     await user.click(backendTab)
 
-    // Should show backend techs
-    expect(screen.getByText('Node.js + Express')).toBeInTheDocument()
+    // Should show backend techs (BaaS)
+    expect(screen.getByText('Supabase')).toBeInTheDocument()
   })
 
   it('shows correct total selection count', () => {

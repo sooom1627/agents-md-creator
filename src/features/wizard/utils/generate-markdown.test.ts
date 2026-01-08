@@ -249,8 +249,8 @@ describe('generateMarkdownPreview', () => {
       customRole: '',
       techStack: {
         frontend: [{ id: 'nextjs', version: '15' }],
-        backend: [{ id: 'nodejs-express' }],
-        database: [{ id: 'postgresql', version: '16' }],
+        backend: [{ id: 'supabase-backend' }],
+        database: [{ id: 'supabase-postgres' }],
         styling: [{ id: 'tailwind' }],
         testing: [{ id: 'vitest' }],
         tools: [{ id: 'typescript' }],
@@ -261,8 +261,8 @@ describe('generateMarkdownPreview', () => {
     const result = generateMarkdownPreview(formData)
 
     expect(result).toContain('Frontend: Next.js 15')
-    expect(result).toContain('Backend: Node.js + Express')
-    expect(result).toContain('Database: PostgreSQL 16')
+    expect(result).toContain('Backend: Supabase')
+    expect(result).toContain('Database: Supabase Postgres')
     expect(result).toContain('Styling: Tailwind CSS')
     expect(result).toContain('Testing: Vitest')
     expect(result).toContain('Tools: TypeScript')
